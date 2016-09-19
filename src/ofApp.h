@@ -25,6 +25,8 @@ public:
 
     ofColor averageColor(const ofPixels* pix);
 
+    void setupTextDisplay(ofxTextInputField* field, float x, float y, float w, float h);
+
     ofxScreenGrab grabber;
     float grabSizeX, grabSizeY, sampleSize;
     ofTexture tex;
@@ -35,4 +37,8 @@ public:
     ofxTextInputField redValue;
     ofxTextInputField greenValue;
     ofxTextInputField blueValue;
+
+    ofxTextInputField hueValue;
+    ofxTextInputField satValue;
+    ofxTextInputField brightValue;
 };

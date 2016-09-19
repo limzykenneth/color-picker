@@ -4,39 +4,30 @@
 void ofApp::setup(){
     grabSizeX = 100;
     grabSizeY = 100;
-    sampleSize = 10;
+    sampleSize = 5;
     grabber.setup(grabSizeX, grabSizeY);
 
     font.load("InconsolataGo-Regular.ttf", 15);
 
-    hexCode.setup();
-    hexCode.bounds.x = 10;
-    hexCode.bounds.y = 20;
-    hexCode.bounds.width = 150;
-    hexCode.bounds.height = 30;
+    setupTextDisplay(&hexCode, 10, 20, 100, 30);
 
-    redValue.setup();
-    redValue.bounds.x = 10;
-    redValue.bounds.y = hexCode.bounds.y + hexCode.bounds.height;
-    redValue.bounds.width = 80;
-    redValue.bounds.height = 30;
+    setupTextDisplay(&redValue, 10, hexCode.bounds.y + hexCode.bounds.height + 10, 80, 30);
+    setupTextDisplay(&greenValue, 10, redValue.bounds.y + redValue.bounds.height, 80, 30);
+    setupTextDisplay(&blueValue, 10, greenValue.bounds.y + greenValue.bounds.height, 80, 30);
 
-    greenValue.setup();
-    greenValue.bounds.x = 10;
-    greenValue.bounds.y = redValue.bounds.y + redValue.bounds.height;
-    greenValue.bounds.width = 80;
-    greenValue.bounds.height = 30;
+    setupTextDisplay(&hueValue, 10, blueValue.bounds.y + blueValue.bounds.height + 10, 80, 30);
+    setupTextDisplay(&satValue, 10, hueValue.bounds.y + hueValue.bounds.height, 80, 30);
+    setupTextDisplay(&brightValue, 10, satValue.bounds.y + satValue.bounds.height, 80, 30);
+}
 
-    blueValue.setup();
-    blueValue.bounds.x = 10;
-    blueValue.bounds.y = greenValue.bounds.y + greenValue.bounds.height;
-    blueValue.bounds.width = 80;
-    blueValue.bounds.height = 30;
-
-    hexCode.setFont(font);
-    redValue.setFont(font);
-    greenValue.setFont(font);
-    blueValue.setFont(font);
+//--------------------------------------------------------------
+void ofApp::setupTextDisplay(ofxTextInputField* field, float x, float y, float w, float h){
+    field->setup();
+    field->bounds.x = x;
+    field->bounds.y = y;
+    field->bounds.width = w;
+    field->bounds.height = h;
+    field->setFont(font);
 }
 
 //--------------------------------------------------------------
@@ -65,10 +56,15 @@ void ofApp::draw(){
     ofPushStyle();
         int hex = grabColor.getHex();
         ofSetColor(255);
-        ofDrawRectangle(hexCode.bounds.x, hexCode.bounds.y, hexCode.bounds.width, hexCode.bounds.height);
-        ofDrawRectangle(redValue.bounds.x, redValue.bounds.y, redValue.bounds.width, redValue.bounds.height);
-        ofDrawRectangle(greenValue.bounds.x, greenValue.bounds.y, greenValue.bounds.width, greenValue.bounds.height);
-        ofDrawRectangle(blueValue.bounds.x, blueValue.bounds.y, blueValue.bounds.width, blueValue.bounds.height);
+        ofDrawRectangle(hexCode.bounds);
+
+        ofDrawRectangle(redValue.bounds);
+        ofDrawRectangle(greenValue.bounds);
+        ofDrawRectangle(blueValue.bounds);
+
+        ofDrawRectangle(hueValue.bounds);
+        ofDrawRectangle(satValue.bounds);
+        ofDrawRectangle(brightValue.bounds);
 
         ofSetColor(0);
         hexCode.text = ofToHex(hex).replace(0, 2, " #");
@@ -85,12 +81,27 @@ void ofApp::draw(){
         int bStr = grabColor.b;
         blueValue.text = " b: " + ofToString(bStr);
         blueValue.draw();
+
+        int hStr = grabColor.getHueAngle();
+        hueValue.text = " H: " + ofToString(hStr);
+        hueValue.draw();
+
+        int sStr = ofMap(grabColor.getSaturation(), 0, 255, 0, 100, true);
+        satValue.text = " S: " + ofToString(sStr);
+        satValue.draw();
+
+        int brStr = ofMap(grabColor.getLightness(), 0, 255, 0, 100, true);
+        brightValue.text = " B: " + ofToString(brStr);
+        brightValue.draw();
     ofPopStyle();
 
     ofPushStyle();
+    ofPushMatrix();
         ofNoFill();
         ofSetColor(0, 0, 0, 120);
-        ofDrawRectangle(ofGetWidth()/2-5, ofGetHeight()/2-5, 10, 10);
+        ofTranslate(-sampleSize/2, -sampleSize/2);
+        ofDrawRectangle(ofGetWidth()/2-5, ofGetHeight()/2-5, sampleSize, sampleSize);
+    ofPopMatrix();
     ofPopStyle();
 }
 
@@ -120,7 +131,16 @@ ofColor ofApp::averageColor(const ofPixels* pix){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+    switch (key) {
+        case '=':
+            if (sampleSize < 50) sampleSize++;
+            break;
+        case '-':
+            if (sampleSize > 1) sampleSize--;
+            break;
+        default:
+            break;
+    }
 }
 
 //--------------------------------------------------------------
