@@ -2,6 +2,8 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    ofSetWindowTitle("Color Picker #");
+
     grabSizeX = 100;
     grabSizeY = 100;
     sampleSize = 5;
@@ -18,6 +20,8 @@ void ofApp::setup(){
     setupTextDisplay(&hueValue, 10, blueValue.bounds.y + blueValue.bounds.height + 10, 80, 30);
     setupTextDisplay(&satValue, 10, hueValue.bounds.y + hueValue.bounds.height, 80, 30);
     setupTextDisplay(&brightValue, 10, satValue.bounds.y + satValue.bounds.height, 80, 30);
+
+    pauseSampling = false;
 }
 
 //--------------------------------------------------------------
@@ -55,7 +59,11 @@ void ofApp::draw(){
 
     ofPushStyle();
         int hex = grabColor.getHex();
-        ofSetColor(255);
+        if(!pauseSampling) {
+            ofSetColor(255);
+        }else{
+            ofSetColor(120, 255, 120);
+        }
         ofDrawRectangle(hexCode.bounds);
 
         ofDrawRectangle(redValue.bounds);
@@ -67,31 +75,31 @@ void ofApp::draw(){
         ofDrawRectangle(brightValue.bounds);
 
         ofSetColor(0);
-        hexCode.text = ofToHex(hex).replace(0, 2, " #");
+        if(!pauseSampling) hexCode.text = ofToHex(hex).replace(0, 2, " #");
         hexCode.draw();
 
         int rStr = grabColor.r;
-        redValue.text = " r: " + ofToString(rStr);
+        if(!pauseSampling) redValue.text = " r: " + ofToString(rStr);
         redValue.draw();
 
         int gStr = grabColor.g;
-        greenValue.text = " g: " + ofToString(gStr);
+        if(!pauseSampling) greenValue.text = " g: " + ofToString(gStr);
         greenValue.draw();
 
         int bStr = grabColor.b;
-        blueValue.text = " b: " + ofToString(bStr);
+        if(!pauseSampling) blueValue.text = " b: " + ofToString(bStr);
         blueValue.draw();
 
         int hStr = grabColor.getHueAngle();
-        hueValue.text = " H: " + ofToString(hStr);
+        if(!pauseSampling) hueValue.text = " H: " + ofToString(hStr);
         hueValue.draw();
 
         int sStr = ofMap(grabColor.getSaturation(), 0, 255, 0, 100, true);
-        satValue.text = " S: " + ofToString(sStr);
+        if(!pauseSampling) satValue.text = " S: " + ofToString(sStr);
         satValue.draw();
 
         int brStr = ofMap(grabColor.getLightness(), 0, 255, 0, 100, true);
-        brightValue.text = " B: " + ofToString(brStr);
+        if(!pauseSampling) brightValue.text = " B: " + ofToString(brStr);
         brightValue.draw();
     ofPopStyle();
 
@@ -145,7 +153,9 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-
+    if(key == OF_KEY_RETURN){
+        pauseSampling = !pauseSampling;
+    }
 }
 
 //--------------------------------------------------------------

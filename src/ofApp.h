@@ -41,4 +41,6 @@ public:
     ofxTextInputField hueValue;
     ofxTextInputField satValue;
     ofxTextInputField brightValue;
+
+    bool pauseSampling;
 };
