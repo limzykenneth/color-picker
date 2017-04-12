@@ -3,11 +3,12 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetWindowTitle("Color Picker #");
-
-    grabSizeX = 100;
-    grabSizeY = 100;
+    
+    bool retina = true;
+    grabSizeX = 200;
+    grabSizeY = 200;
     sampleSize = 5;
-    grabber.setup(grabSizeX, grabSizeY);
+    grabber.setup(grabSizeX, grabSizeY, retina);
 
     font.load("InconsolataGo-Regular.ttf", 15);
 
