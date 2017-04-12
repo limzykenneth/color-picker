@@ -22,6 +22,10 @@ void ofApp::setup(){
     setupTextDisplay(&brightValue, 10, satValue.bounds.y + satValue.bounds.height, 80, 30);
 
     pauseSampling = false;
+    
+    copyButton.addListener(this, &ofApp::copyButtonPressed);
+    gui.setup();
+    gui.add(copyButton.setup("Copy Hex"));
 }
 
 //--------------------------------------------------------------
@@ -115,6 +119,8 @@ void ofApp::draw(){
         ofDrawRectangle(ofGetWidth()/2-5, ofGetHeight()/2-5, sampleSize, sampleSize);
     ofPopMatrix();
     ofPopStyle();
+    
+    gui.draw();
 }
 
 //--------------------------------------------------------------
@@ -160,6 +166,11 @@ void ofApp::keyReleased(int key){
     if(key == OF_KEY_RETURN){
         pauseSampling = !pauseSampling;
     }
+}
+
+//--------------------------------------------------------------
+void ofApp::copyButtonPressed(){
+    
 }
 
 //--------------------------------------------------------------

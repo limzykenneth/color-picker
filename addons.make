@@ -1,1 +1,4 @@
+ofxClipboard
+ofxGui
 ofxScreenGrab
+ofxTextInputField

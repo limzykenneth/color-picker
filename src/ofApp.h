@@ -3,6 +3,8 @@
 #include "ofMain.h"
 #include "ofxScreenGrab.h"
 #include "ofxTextInputField.h"
+#include "ofxClipboard.h"
+#include "ofxGui.h"
 
 class ofApp : public ofBaseApp{
 
@@ -22,6 +24,8 @@ public:
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
+    
+    void copyButtonPressed();
 
     ofColor averageColor(const ofPixels* pix);
 
@@ -41,6 +45,9 @@ public:
     ofxTextInputField hueValue;
     ofxTextInputField satValue;
     ofxTextInputField brightValue;
+    
+    ofxButton copyButton;
+    ofxPanel gui;
 
     bool pauseSampling;
     bool retina = true;
