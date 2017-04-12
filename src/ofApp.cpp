@@ -11,31 +11,17 @@ void ofApp::setup(){
 
     font.load("InconsolataGo-Regular.ttf", 15);
 
-    setupTextDisplay(&hexCode, 10, 20, 100, 30);
-
-    setupTextDisplay(&redValue, 10, hexCode.bounds.y + hexCode.bounds.height + 10, 80, 30);
-    setupTextDisplay(&greenValue, 10, redValue.bounds.y + redValue.bounds.height, 80, 30);
-    setupTextDisplay(&blueValue, 10, greenValue.bounds.y + greenValue.bounds.height, 80, 30);
-
-    setupTextDisplay(&hueValue, 10, blueValue.bounds.y + blueValue.bounds.height + 10, 80, 30);
-    setupTextDisplay(&satValue, 10, hueValue.bounds.y + hueValue.bounds.height, 80, 30);
-    setupTextDisplay(&brightValue, 10, satValue.bounds.y + satValue.bounds.height, 80, 30);
-
     pauseSampling = false;
     
     copyButton.addListener(this, &ofApp::copyButtonPressed);
     gui.setup();
     gui.add(copyButton.setup("Copy Hex"));
-}
-
-//--------------------------------------------------------------
-void ofApp::setupTextDisplay(ofxTextInputField* field, float x, float y, float w, float h){
-    field->setup();
-    field->bounds.x = x;
-    field->bounds.y = y;
-    field->bounds.width = w;
-    field->bounds.height = h;
-    field->setFont(font);
+    gui.add(color.setup("RGB", ofColor(100, 100, 140), ofColor(0, 0), ofColor(255, 255)));
+    hsb.add(hue.set("Hue", 0, 0, 255));
+    hsb.add(saturation.set("Saturation", 0, 0, 255));
+    hsb.add(brightness.set("Brightness", 0, 0, 255));
+    hsb.setName("HSB");
+    gui.add(hsb);
 }
 
 //--------------------------------------------------------------
@@ -58,59 +44,33 @@ void ofApp::update(){
         pixels.crop(grabSizeX/2 - 5, grabSizeY/2 - 5, sampleSize, sampleSize);
     }
 
-    grabColor = averageColor(&pixels);
+    if(!pauseSampling) {
+        grabColor = averageColor(&pixels);
+        color = grabColor;
+        hue = grabColor.getHue();
+        saturation = grabColor.getSaturation();
+        brightness = grabColor.getBrightness();
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     tex.draw(0, 0, ofGetWidth(), ofGetHeight());
-
+    gui.setPosition(1, 1);
+    gui.setSize(150, gui.getHeight());
+    gui.setWidthElements(150);
+    gui.setDefaultHeight(gui.getHeight());
+    gui.draw();
+    
+    int hex = grabColor.getHex();
+    int fontY = gui.getHeight() + 30;
+    
     ofPushStyle();
-        int hex = grabColor.getHex();
-        if(!pauseSampling) {
-            ofSetColor(255);
-        }else{
-            ofSetColor(120, 255, 120);
-        }
-        ofDrawRectangle(hexCode.bounds);
-
-        ofDrawRectangle(redValue.bounds);
-        ofDrawRectangle(greenValue.bounds);
-        ofDrawRectangle(blueValue.bounds);
-
-        ofDrawRectangle(hueValue.bounds);
-        ofDrawRectangle(satValue.bounds);
-        ofDrawRectangle(brightValue.bounds);
-
-        ofSetColor(0);
-        if(!pauseSampling) hexCode.text = ofToHex(hex).replace(0, 2, " #");
-        hexCode.draw();
-
-        int rStr = grabColor.r;
-        if(!pauseSampling) redValue.text = " r: " + ofToString(rStr);
-        redValue.draw();
-
-        int gStr = grabColor.g;
-        if(!pauseSampling) greenValue.text = " g: " + ofToString(gStr);
-        greenValue.draw();
-
-        int bStr = grabColor.b;
-        if(!pauseSampling) blueValue.text = " b: " + ofToString(bStr);
-        blueValue.draw();
-
-        int hStr = grabColor.getHueAngle();
-        if(!pauseSampling) hueValue.text = " H: " + ofToString(hStr);
-        hueValue.draw();
-
-        int sStr = ofMap(grabColor.getSaturation(), 0, 255, 0, 100, true);
-        if(!pauseSampling) satValue.text = " S: " + ofToString(sStr);
-        satValue.draw();
-
-        int brStr = ofMap(grabColor.getLightness(), 0, 255, 0, 100, true);
-        if(!pauseSampling) brightValue.text = " B: " + ofToString(brStr);
-        brightValue.draw();
+        if(pauseSampling) ofSetColor(120, 255, 120);
+        ofRectangle rect = font.getStringBoundingBox(ofToHex(hex).replace(0, 2, "#"), 10, fontY);
+        ofDrawRectangle(rect.x - 5, rect.y - 5, rect.width + 10, rect.height + 10);
     ofPopStyle();
-
+    
     ofPushStyle();
     ofPushMatrix();
         ofNoFill();
@@ -120,7 +80,10 @@ void ofApp::draw(){
     ofPopMatrix();
     ofPopStyle();
     
-    gui.draw();
+    ofPushStyle();
+        ofSetColor(0);
+        font.drawString(ofToHex(hex).replace(0, 2, "#"), 10, fontY);
+    ofPopStyle();
 }
 
 //--------------------------------------------------------------
@@ -165,12 +128,17 @@ void ofApp::keyPressed(int key){
 void ofApp::keyReleased(int key){
     if(key == OF_KEY_RETURN){
         pauseSampling = !pauseSampling;
+        if(pauseSampling){
+            int hex = grabColor.getHex();
+            ofxClipboard::copy(ofToHex(hex).replace(0, 2, "#"));
+        }
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::copyButtonPressed(){
-    
+    int hex = grabColor.getHex();
+    ofxClipboard::copy(ofToHex(hex).replace(0, 2, "#"));
 }
 
 //--------------------------------------------------------------

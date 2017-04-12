@@ -2,7 +2,6 @@
 
 #include "ofMain.h"
 #include "ofxScreenGrab.h"
-#include "ofxTextInputField.h"
 #include "ofxClipboard.h"
 #include "ofxGui.h"
 
@@ -29,24 +28,20 @@ public:
 
     ofColor averageColor(const ofPixels* pix);
 
-    void setupTextDisplay(ofxTextInputField* field, float x, float y, float w, float h);
-
     ofxScreenGrab grabber;
     float grabSizeX, grabSizeY, sampleSize;
     ofTexture tex;
     ofColor grabColor;
 
     ofTrueTypeFont font;
-    ofxTextInputField hexCode;
-    ofxTextInputField redValue;
-    ofxTextInputField greenValue;
-    ofxTextInputField blueValue;
-
-    ofxTextInputField hueValue;
-    ofxTextInputField satValue;
-    ofxTextInputField brightValue;
     
     ofxButton copyButton;
+    ofxColorSlider color;
+    ofParameterGroup hsb;
+    ofParameter<int> hue;
+    ofParameter<int> saturation;
+    ofParameter<int> brightness;
+    
     ofxPanel gui;
 
     bool pauseSampling;
