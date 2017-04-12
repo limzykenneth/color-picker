@@ -2,6 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    ofSetDataPathRoot("../Resources/data/");
     ofSetWindowTitle("Color Picker #");
     
     grabSizeX = 100;
