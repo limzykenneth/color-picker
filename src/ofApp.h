@@ -43,4 +43,5 @@ public:
     ofxTextInputField brightValue;
 
     bool pauseSampling;
+    bool retina = true;
 };

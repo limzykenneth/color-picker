@@ -4,9 +4,8 @@
 void ofApp::setup(){
     ofSetWindowTitle("Color Picker #");
     
-    bool retina = true;
-    grabSizeX = 200;
-    grabSizeY = 200;
+    grabSizeX = 100;
+    grabSizeY = 100;
     sampleSize = 5;
     grabber.setup(grabSizeX, grabSizeY, retina);
 
@@ -49,7 +48,11 @@ void ofApp::update(){
     tex = grabber.getTextureReference();
     tex.readToPixels(pixels);
 
-    pixels.crop(grabSizeX/2 - 5, grabSizeY/2 - 5, sampleSize, sampleSize);
+    if(retina){
+        pixels.crop(grabSizeX - 3, grabSizeY - 3, sampleSize, sampleSize);
+    }else{
+        pixels.crop(grabSizeX/2 - 5, grabSizeY/2 - 5, sampleSize, sampleSize);
+    }
 
     grabColor = averageColor(&pixels);
 }
